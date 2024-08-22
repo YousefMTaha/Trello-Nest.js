@@ -4,7 +4,7 @@ import { Model, Types } from 'mongoose';
 import { ManyTask, OneTask, Task } from 'src/schemas/task.schema';
 import { addTaskDto, updateTaskDTO } from './task.dto';
 import { User } from 'src/schemas/user.schema';
-//
+
 @Injectable()
 export class TaskService {
   constructor(
@@ -25,7 +25,7 @@ export class TaskService {
     const taskType = Array.isArray(body.assignTo);
 
     const isAsssignToExist = await this.checkUserId(body.assignTo, taskType);
-    
+
     if (!isAsssignToExist.exist)
       throw new BadRequestException(isAsssignToExist.message);
 
@@ -39,9 +39,7 @@ export class TaskService {
     };
   }
 
-  async updateTask(req: any, body: updateTaskDTO) {
-    const {title  , content ,   }
-  }
+  async updateTask(req: any, body: updateTaskDTO) {}
 
   private async checkUserId(
     id: any,
