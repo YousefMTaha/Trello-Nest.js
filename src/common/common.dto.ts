@@ -1,6 +1,7 @@
+import { Types } from 'mongoose';
 import { IsObjectId } from 'src/decorators/isObjectId.decorator';
 
 export class ObjectIdDTO {
   @IsObjectId()
-  id: string;
+  id: Types.ObjectId | [Types.ObjectId];
 }
