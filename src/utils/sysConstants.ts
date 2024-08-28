@@ -7,4 +7,7 @@ export const sysRoles: TsysRoles = {
   Admin: 'Admin',
 };
 
-
+export const taskTypes: { manyTask: string; oneTask: string } = {
+  manyTask: 'ManyTask',
+  oneTask: 'OneTask',
+};
