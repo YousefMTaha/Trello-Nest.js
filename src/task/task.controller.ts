@@ -4,16 +4,24 @@ import {
   Delete,
   Get,
   Param,
+  Patch,
   Post,
   Put,
   Request,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { TaskService } from './task.service';
 import { AddTaskDto, UpdateTaskDTO } from './task.dto';
-import { Request as Req } from 'express';
 import { AuthenticationGuard } from 'src/guards/authentication/authentication.guard';
 import { ObjectIdDTO } from 'src/common/common.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { FileValidationPipe } from 'src/interceptors/file-validation.interceptor';
+import { fileTypes } from 'src/utils/sysConstants';
+import { diskStorage } from 'multer';
+import { Request as Req } from 'express';
+
 @Controller('tasks')
 export class TaskController {
   constructor(private _TaskServerice: TaskService) {}
@@ -43,13 +51,38 @@ export class TaskController {
 
   @UseGuards(AuthenticationGuard)
   @Get('assignTo/:id')
-  async getAllTasksAssingtoOne(@Param() req: ObjectIdDTO) {
-    return this._TaskServerice.getAllTaskToOne(req);
+  async getAllTasksAssingtoOne(@Param() param: ObjectIdDTO) {
+    return this._TaskServerice.getAllTaskToOne(param);
+  }
+
+  @UseGuards(AuthenticationGuard)
+  @Get('lateTasks')
+  async getAllLateTask(@Request() req: any) {
+    return this._TaskServerice.getAllLateTask(req);
   }
 
   @UseGuards(AuthenticationGuard)
   @Get(':id')
-  getSpecificTask(@Request() req: Req) {
+  getSpecificTask(@Request() req: any) {
     return this._TaskServerice.getOneTask(req);
+  }
+
+  @UseGuards(AuthenticationGuard)
+  @Patch('uploadAttachment/:id')
+  @UseInterceptors(FileInterceptor('file', { dest: './uploads' }))
+  uploadFile(
+    @Param() id: ObjectIdDTO,
+    @UploadedFile(new FileValidationPipe(fileTypes.image))
+    file: Express.Multer.File,
+    @Request() req: any,
+  ) {
+    req.file = file;
+    return this._TaskServerice.uploadAttachment(req);
+  }
+
+  @UseGuards(AuthenticationGuard)
+  @Patch('deleteAttach/:id')
+  deleteAttach(@Request() req: any, @Param() param: ObjectIdDTO) {
+    return this._TaskServerice.deleteAttachment(req);
   }
 }
