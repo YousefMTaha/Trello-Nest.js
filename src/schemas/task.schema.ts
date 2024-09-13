@@ -24,11 +24,14 @@ export class Task {
   list: Types.ObjectId;
 
   @Prop({ type: Types.ObjectId, ref: 'User', required: true })
-  createdBy: User;
+  owner: User;
 
   @Prop({ min: Date.now(), required: true })
   deadline: Date;
 
+  @Prop({ default: false })
+  completed: boolean;
+  
   @Prop({
     type: [{ public_id: String, secure_url: String }],
   })
