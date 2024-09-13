@@ -5,6 +5,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { taskModule } from 'src/task/task.module';
 import { userModule } from 'src/user/user.module';
 import { ConfigModule } from '@nestjs/config';
+import { ListModule } from 'src/list/list.module';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { ConfigModule } from '@nestjs/config';
     MongooseModule.forRoot('mongodb://localhost:27017/trello-nest'),
     taskModule,
     userModule,
+    ListModule,
   ],
   controllers: [AppController],
   providers: [AppService],
