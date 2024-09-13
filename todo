@@ -1,0 +1,19 @@
+# Task (File upload)
+
+- upload on cloud without need to upload locally
+
+# List
+
+- Authroization(Board Owner , WorkSpace Owner)
+
+# user schema
+
+- isLogin - isDeleted - priority ("low" , "medium" , "high) - subTasks
+
+# auth
+
+- logout - update info - soft delete (automaticlly delete after 1 day) - change password
+
+# user
+
+- resendToken - forget password
