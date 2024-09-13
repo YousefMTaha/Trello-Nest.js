@@ -19,8 +19,9 @@ import {
 import { AddTaskDto, UpdateTaskDTO } from './task.dto';
 import { User } from 'src/schemas/user.schema';
 import { cloudinaryFolderPath, taskTypes } from 'src/utils/sysConstants';
-import { ObjectIdDTO } from 'src/common/common.dto';
+import { ObjectIdDTO } from 'src/common/dto/common.dto';
 import { CloudinaryService } from 'src/utils/services/cloudinary/cloudinary.service';
+import { DBoperation } from 'src/common/services/operations.db';
 
 @Injectable()
 export class TaskService {
@@ -31,20 +32,18 @@ export class TaskService {
     @InjectModel(User.name) private readonly _userModel: Model<User>,
     private readonly _cloudinaryService: CloudinaryService,
   ) {}
+  private _operations = new DBoperation<Task>(this._taskModel);
 
   home(): String {
     return 'Task Page';
   }
 
-  async getTask(): Promise<Task[]> {
-    return await this._taskModel.find();
+  async getAllTasks(): Promise<Task[]> {
+    return await this._operations.getAll();
   }
 
   async getOneTask(req: any): Promise<object> {
-    const task = await this._taskModel.findById(req.params.id);
-    return task
-      ? { status: true, task }
-      : { status: false, message: 'invalid task id' };
+    return await this._operations.getOne(req.params.id);
   }
 
   async addTask(req: any, body: AddTaskDto): Promise<object> {
@@ -57,7 +56,7 @@ export class TaskService {
 
     const taskModel = taskType ? this._manyTask : this._oneTask;
 
-    const newTask = new taskModel({ ...body, createdBy: req.user._id });
+    const newTask = new taskModel({ ...body, owner: req.user._id });
 
     return {
       message: 'Done',
@@ -65,6 +64,7 @@ export class TaskService {
     };
   }
 
+  // todo check who want to update - delete task
   async updateTask(req: any, body: UpdateTaskDTO): Promise<object> {
     const { content, title, deadline, assignTo } = body;
     const { id: taskId } = req.params;
