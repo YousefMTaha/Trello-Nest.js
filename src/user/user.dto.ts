@@ -1,4 +1,5 @@
 import {
+  IsEmail,
   IsEnum,
   IsNumber,
   IsOptional,
@@ -24,6 +25,7 @@ export class AddUserDTO {
   @Match('password')
   cPassword: string;
 
+  @IsEmail()
   email: string;
 
   @Min(18)
