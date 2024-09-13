@@ -12,6 +12,8 @@ import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { sendEmail } from 'src/utils/email';
 import { Request } from 'express';
+import { Helpers } from 'src/common/services/helpers';
+import { sysFields } from 'src/utils/sysConstants';
 
 @Injectable()
 export class userService {
@@ -19,6 +21,8 @@ export class userService {
     @InjectModel(User.name) private _userModel: Model<User>,
     private _jwtService: JwtService,
   ) {}
+
+  private _helpers = new Helpers<User>(this._userModel);
 
   async getUsers(): Promise<object[]> {
     return await this._userModel.find();
@@ -28,15 +32,15 @@ export class userService {
     const { email } = body;
 
     // check for existance
-    const isEmail = await this._userModel.findOne({ email });
-    if (isEmail) {
-      throw new ConflictException('email already exist');
-    }
+    await this._helpers.isNotExist({
+      field: sysFields.user.email,
+      value: email,
+    });
 
-    const { firstName, lastName, ...data } = body;
+    const { firstName, lastName, ...remain } = body;
 
     const userData: responseUser = {
-      ...data,
+      ...remain,
       name: {
         firstName: body.firstName,
         lastName: body.lastName,
