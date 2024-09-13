@@ -15,11 +15,10 @@ import {
 import { TaskService } from './task.service';
 import { AddTaskDto, UpdateTaskDTO } from './task.dto';
 import { AuthenticationGuard } from 'src/guards/authentication/authentication.guard';
-import { ObjectIdDTO } from 'src/common/common.dto';
+import { ObjectIdDTO } from 'src/common/dto/common.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { FileValidationPipe } from 'src/interceptors/file-validation.interceptor';
 import { fileTypes } from 'src/utils/sysConstants';
-import { diskStorage } from 'multer';
 import { Request as Req } from 'express';
 
 @Controller('tasks')
@@ -28,7 +27,7 @@ export class TaskController {
 
   @Get()
   getTasks(): Promise<object> {
-    return this._TaskServerice.getTask();
+    return this._TaskServerice.getAllTasks();
   }
 
   @UseGuards(AuthenticationGuard)
