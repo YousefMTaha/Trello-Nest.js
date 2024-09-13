@@ -12,7 +12,7 @@ import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { sendEmail } from 'src/utils/email';
 import { Request } from 'express';
-import { Helpers } from 'src/common/services/helpers';
+import { Helper } from 'src/common/services/helpers';
 import { sysFields } from 'src/utils/sysConstants';
 
 @Injectable()
@@ -22,7 +22,7 @@ export class userService {
     private _jwtService: JwtService,
   ) {}
 
-  private _helpers = new Helpers<User>(this._userModel);
+  private _helpers = new Helper<User>(this._userModel);
 
   async getUsers(): Promise<object[]> {
     return await this._userModel.find();
@@ -30,6 +30,8 @@ export class userService {
 
   async signup(req: Request, body: AddUserDTO): Promise<any> {
     const { email } = body;
+
+    console.log(email);
 
     // check for existance
     await this._helpers.isNotExist({
